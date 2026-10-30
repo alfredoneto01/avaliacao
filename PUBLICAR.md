@@ -1,6 +1,9 @@
 # Publicar no PythonAnywhere
 
-Em todos os comandos, troque `SEUUSUARIO` pelo seu nome de usuário do PythonAnywhere.
+Em todos os comandos, troque `SEUUSUARIO` pelo seu nome de usuário do PythonAnywhere,
+**respeitando maiúsculas e minúsculas** (ex.: `AlfredoNeto`). Se tiver dúvida, rode `echo $HOME` no console.
+
+Ao colar código, cada linha deve começar na coluna 1, sem espaços antes.
 
 ## 1. Baixar o código e instalar
 
@@ -88,5 +91,5 @@ Faça isso ao fim de cada período de avaliação.
 
 ## Plano gratuito
 
-A cada 3 meses o PythonAnywhere envia um e-mail pedindo para estender o site.
-Basta entrar na aba **Web** e clicar em **Run until 3 months from today**.
+Todo mês o PythonAnywhere envia um e-mail pedindo para estender o site.
+Basta entrar na aba **Web** e clicar em **Run until 1 month from today**.
