@@ -17,16 +17,30 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-^x5vk=a#sjvn41e)l2rk18x7%7d=*-d+0pp9v-)o9*_2luzasw')
+# Configuração de produção fica num arquivo .env (fora do git), com linhas CHAVE=valor.
+_env = BASE_DIR / '.env'
+if _env.exists():
+    for _linha in _env.read_text(encoding='utf-8').splitlines():
+        if '=' in _linha and not _linha.lstrip().startswith('#'):
+            _chave, _valor = _linha.split('=', 1)
+            os.environ.setdefault(_chave.strip(), _valor.strip())
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', '1') == '1'
 
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-somente-para-desenvolvimento')
+if not DEBUG and SECRET_KEY.startswith('django-insecure'):
+    raise RuntimeError('Defina DJANGO_SECRET_KEY no arquivo .env antes de rodar em produção.')
+
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
+CSRF_TRUSTED_ORIGINS = [f'https://{h}' for h in ALLOWED_HOSTS if h not in ('localhost', '127.0.0.1')]
+
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
 
 
 # Application definition
@@ -117,15 +131,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
-# Email
-# https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
-
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
 
 LOGIN_URL = 'admin:login'
