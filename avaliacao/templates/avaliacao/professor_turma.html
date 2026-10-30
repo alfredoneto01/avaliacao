@@ -1,0 +1,17 @@
+{% extends "avaliacao/base.html" %}
+{% block titulo %}Avaliação da turma {{ turma.nome }}{% endblock %}
+{% block conteudo %}
+<p><a href="{% url 'avaliacao:professor' professor.token %}">← Minhas turmas</a></p>
+<h1>{{ turma.nome }} – {{ turma.semestre }}</h1>
+<p class="sub">Professor(a): <strong>{{ professor.nome }}</strong>{% if editando %} · editando avaliação já enviada{% endif %}</p>
+<form method="post">{% csrf_token %}
+  {% for campo in form %}
+    <div class="card{% if campo.errors %} erro{% endif %}">
+      <label for="{{ campo.id_for_label }}"><strong>{{ campo.label }}</strong></label>
+      {% if campo.errors %}<p class="msg-erro">{{ campo.errors|join:" " }}</p>{% endif %}
+      {% if campo.name == 'classificacao' %}<ul class="radios">{% for r in campo %}<li><label>{{ r.tag }} {{ r.choice_label }}</label></li>{% endfor %}</ul>{% else %}{{ campo }}{% endif %}
+    </div>
+  {% endfor %}
+  <p><button type="submit">Salvar avaliação</button></p>
+</form>
+{% endblock %}

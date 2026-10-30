@@ -1,0 +1,21 @@
+{% extends "avaliacao/base.html" %}
+{% block conteudo %}
+<h1>Olá, {{ professor.nome }}</h1>
+<p class="sub">Avalie cada uma das suas turmas. Você pode editar a avaliação enquanto o semestre estiver aberto.</p>
+{% for m in messages %}<p class="msg-ok">{{ m }}</p>{% endfor %}
+<div class="card">
+<table>
+  <tbody>
+  {% for turma, respondida in turmas %}
+    <tr>
+      <td>{{ turma.nome }} – {{ turma.semestre }}</td>
+      <td>{% if respondida %}<span class="tag ok">respondida</span>{% else %}<span class="tag pend">pendente</span>{% endif %}</td>
+      <td class="num"><a href="{% url 'avaliacao:professor_turma' professor.token turma.pk %}">{% if respondida %}Editar{% else %}Avaliar{% endif %}</a></td>
+    </tr>
+  {% empty %}
+    <tr><td>Nenhuma turma com avaliação aberta no momento.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

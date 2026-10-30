@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block titulo %}Avaliação do Seminário{% endblock %}</title>
+<style>
+  :root { --verde: #1f7a4d; --cinza: #f2f3f5; --borda: #d9dce1; --erro: #b3261e; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; margin: 0; color: #222; background: #fafafa; line-height: 1.45; }
+  main { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+  h1 { color: var(--verde); margin-bottom: .25rem; }
+  h2 { margin-top: 2.5rem; border-bottom: 2px solid var(--verde); padding-bottom: .25rem; }
+  .sub { color: #555; margin-top: 0; }
+  a { color: var(--verde); }
+  .card { background: #fff; border: 1px solid var(--borda); border-radius: 8px; padding: 1rem; margin: 1rem 0; }
+  .card.erro { border-color: var(--erro); }
+  .msg-erro { color: var(--erro); font-weight: 600; }
+  .msg-ok { background: #e6f4ec; border: 1px solid var(--verde); padding: .75rem 1rem; border-radius: 6px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: .5rem; text-align: left; vertical-align: middle; }
+  thead th { font-size: .8rem; font-weight: 500; color: #555; }
+  tbody tr:nth-child(odd) { background: var(--cinza); }
+  table.escala td.op, table.escala th.op { text-align: center; width: 15%; }
+  table.escala input { width: 1.3rem; height: 1.3rem; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  button, .botao { background: var(--verde); color: #fff; border: 0; border-radius: 6px; padding: .7rem 1.4rem; font-size: 1rem; cursor: pointer; text-decoration: none; display: inline-block; }
+  button.sec { background: #666; padding: .3rem .7rem; font-size: .85rem; }
+  textarea { width: 100%; font: inherit; padding: .5rem; }
+  ul.radios { list-style: none; padding: 0; } ul.radios li { margin: .3rem 0; }
+  .tag { font-size: .8rem; padding: .1rem .5rem; border-radius: 99px; background: var(--cinza); white-space: nowrap; }
+  .tag.ok { background: #e6f4ec; color: var(--verde); } .tag.pend { background: #fdecea; color: var(--erro); }
+  .barra { display: flex; height: .8rem; width: 140px; border-radius: 3px; overflow: hidden; background: var(--cinza); }
+  .barra span { display: block; }
+  .v1 { background: #c0392b; } .v2 { background: #e8a33d; } .v3 { background: #7fb77e; } .v4 { background: #1f7a4d; }
+  .legenda span { display: inline-block; width: .8rem; height: .8rem; vertical-align: middle; margin: 0 .25rem 0 .75rem; }
+  .riscado td { text-decoration: line-through; color: #888; }
+  code { font-size: .85rem; word-break: break-all; }
+  nav.topo { background: var(--verde); padding: .5rem 1rem; } nav.topo a { color: #fff; margin-right: 1rem; }
+</style>
+</head>
+<body>
+{% block nav %}{% endblock %}
+<main>{% block conteudo %}{% endblock %}</main>
+</body>
+</html>

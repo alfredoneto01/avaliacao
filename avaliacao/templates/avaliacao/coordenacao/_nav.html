@@ -1,0 +1,2 @@
+<nav class="topo"><a href="{% url 'avaliacao:painel' %}">Painel</a><a href="{% url 'admin:index' %}">Cadastros</a><a href="{% url 'admin:logout' %}" onclick="event.preventDefault();document.getElementById('sair').submit()">Sair</a></nav>
+<form id="sair" method="post" action="{% url 'admin:logout' %}" hidden>{% csrf_token %}</form>

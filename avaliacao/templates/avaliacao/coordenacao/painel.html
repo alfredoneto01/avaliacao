@@ -1,0 +1,28 @@
+{% extends "avaliacao/base.html" %}
+{% block nav %}{% include "avaliacao/coordenacao/_nav.html" %}{% endblock %}
+{% block conteudo %}
+<h1>Painel da coordenação</h1>
+{% for s in semestres %}
+  <h2>Semestre {{ s.semestre }} {% if s.semestre.aberto %}<span class="tag ok">aberto</span>{% else %}<span class="tag">fechado</span>{% endif %}</h2>
+  <p><a href="{% url 'avaliacao:semestre' s.semestre.pk %}">Relatório por professor</a> · <a href="{% url 'avaliacao:excel' s.semestre.pk %}">Exportar Excel</a></p>
+  {% for t in s.turmas %}
+    <div class="card">
+      <h3 style="margin-top:0">{{ t.turma.nome }}</h3>
+      <p>Link dos alunos: <code>{{ t.link }}</code></p>
+      <p>
+        <strong>{{ t.n_respostas }}</strong> resposta(s) de alunos válidas
+        {% if t.n_descartadas %}· {{ t.n_descartadas }} descartada(s){% endif %}
+        {% if t.n_suspeitos %}· <a href="{% url 'avaliacao:duplicidades' t.turma.pk %}"><span class="tag pend">{{ t.n_suspeitos }} com mesmo IP – revisar</span></a>{% endif %}
+      </p>
+      <p>Professores:
+        {% for p, ok in t.professores %}<span class="tag {% if ok %}ok{% else %}pend{% endif %}">{{ p.nome }}</span> {% empty %}nenhum cadastrado{% endfor %}
+      </p>
+      <p><a href="{% url 'avaliacao:turma' t.turma.pk %}">Ver relatório da turma →</a></p>
+    </div>
+  {% empty %}
+    <p>Nenhuma turma. <a href="{% url 'admin:avaliacao_turma_add' %}">Cadastrar turma</a></p>
+  {% endfor %}
+{% empty %}
+  <p>Nenhum semestre cadastrado. <a href="{% url 'admin:avaliacao_semestre_add' %}">Cadastrar semestre</a></p>
+{% endfor %}
+{% endblock %}

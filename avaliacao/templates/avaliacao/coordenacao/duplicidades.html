@@ -1,0 +1,26 @@
+{% extends "avaliacao/base.html" %}
+{% block nav %}{% include "avaliacao/coordenacao/_nav.html" %}{% endblock %}
+{% block conteudo %}
+<h1>Duplicidades – {{ turma }}</h1>
+<p class="sub">Respostas enviadas do mesmo IP. O IP e o navegador são guardados apenas como código (hash): dá para comparar, mas não para identificar o aluno.
+Lembre que alunos no Wi-Fi do seminário costumam compartilhar o mesmo IP — o sinal mais forte é <strong>mesmo aparelho</strong> com envios próximos no tempo.
+Respostas descartadas saem dos relatórios e podem ser restauradas.</p>
+{% for g in grupos %}
+  <div class="card">
+    <strong>IP <code>{{ g.ip_hash }}</code></strong> – {{ g.respostas|length }} respostas
+    <table>
+      <thead><tr><th>#</th><th>Enviada em</th><th>Aparelho</th><th></th></tr></thead>
+      <tbody>
+      {% for r in g.respostas %}
+        <tr{% if r.descartada %} class="riscado"{% endif %}>
+          <td>{{ r.pk }}</td><td>{{ r.criada_em|date:"d/m/Y H:i:s" }}</td>
+          <td><code>{{ r.navegador_hash }}</code> {% if r.mesmo_aparelho %}<span class="tag pend">mesmo aparelho</span>{% endif %}</td>
+          <td class="num"><form method="post" action="{% url 'avaliacao:descartar' r.pk %}">{% csrf_token %}<button class="sec">{% if r.descartada %}Restaurar{% else %}Descartar{% endif %}</button></form></td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% empty %}<p>Nenhuma resposta repetida por IP nesta turma.</p>{% endfor %}
+<p><a href="{% url 'avaliacao:painel' %}">← Painel</a></p>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "avaliacao/base.html" %}
+{% block nav %}{% include "avaliacao/coordenacao/_nav.html" %}{% endblock %}
+{% block conteudo %}
+<h1>{{ turma.nome }} – {{ turma.semestre }}</h1>
+<p class="sub">{{ n_respostas }} resposta(s) válida(s) de alunos · <a href="{% url 'avaliacao:duplicidades' turma.pk %}">revisar duplicidades</a></p>
+<p class="legenda">Distribuição:{% for v, nome in escala %}<span class="v{{ v }}"></span>{{ nome }}{% endfor %}</p>
+
+<h2>Avaliação dos professores pelos alunos</h2>
+{% for d in disciplinas %}
+  <div class="card">
+    <h3 style="margin-top:0">{{ d.disciplina.nome }} – {{ d.disciplina.professor.nome }}</h3>
+    {% for g in d.grupos %}
+      <table>
+        <thead><tr><th>{{ g.rotulo }}</th><th class="num">Média</th><th></th><th class="num">Resp.</th></tr></thead>
+        <tbody>
+        {% for i in g.itens %}
+          <tr><td>{{ i.texto }}</td><td class="num">{{ i.media|floatformat:2|default:"–" }}</td>
+            <td><div class="barra" title="{% for n in i.distribuicao %}{{ n }}{% if not forloop.last %} / {% endif %}{% endfor %}">{% for n in i.distribuicao %}{% if n %}<span class="v{{ forloop.counter }}" style="flex:{{ n }}"></span>{% endif %}{% endfor %}</div></td>
+            <td class="num">{{ i.total }}</td></tr>
+        {% endfor %}
+          <tr><td><strong>Média do grupo</strong></td><td class="num"><strong>{{ g.media|floatformat:2|default:"–" }}</strong></td><td></td><td></td></tr>
+        </tbody>
+      </table>
+    {% endfor %}
+  </div>
+{% empty %}<p>Nenhuma disciplina cadastrada.</p>{% endfor %}
+
+<h2>Avaliação da turma pelos professores</h2>
+{% for a in avaliacoes %}
+  <div class="card">
+    <h3 style="margin-top:0">{{ a.professor.nome }} – <span class="tag">{{ a.get_classificacao_display }}</span></h3>
+    {% if a.comentarios %}<p><strong>Comentários:</strong> {{ a.comentarios|linebreaksbr }}</p>{% endif %}
+    {% if a.destaques_positivos %}<p><strong>Destaques positivos:</strong> {{ a.destaques_positivos|linebreaksbr }}</p>{% endif %}
+    {% if a.destaques_negativos %}<p><strong>Destaques negativos:</strong> {{ a.destaques_negativos|linebreaksbr }}</p>{% endif %}
+    {% if a.comentario_destaques %}<p><strong>Sobre os destaques:</strong> {{ a.comentario_destaques|linebreaksbr }}</p>{% endif %}
+  </div>
+{% empty %}<p>Nenhum professor avaliou a turma ainda.</p>{% endfor %}
+{% endblock %}

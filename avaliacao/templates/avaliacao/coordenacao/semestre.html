@@ -1,0 +1,20 @@
+{% extends "avaliacao/base.html" %}
+{% block nav %}{% include "avaliacao/coordenacao/_nav.html" %}{% endblock %}
+{% block conteudo %}
+<h1>Semestre {{ semestre }} – consolidado por professor</h1>
+<p class="sub">Médias de 1 (Ruim) a 4 (Excelente), somando todas as disciplinas de cada professor no semestre. <a href="{% url 'avaliacao:excel' semestre.pk %}">Exportar Excel</a></p>
+<div class="card">
+<table>
+  <thead><tr><th>Professor</th><th class="num">Disciplinas</th><th class="num">Didática</th><th class="num">Postura</th><th class="num">Autoavaliação dos alunos</th></tr></thead>
+  <tbody>
+  {% for p in professores %}
+    <tr><td>{{ p.nome }}</td><td class="num">{{ p.n_disciplinas }}</td>
+      <td class="num">{{ p.didatica|floatformat:2|default:"–" }}</td>
+      <td class="num">{{ p.postura|floatformat:2|default:"–" }}</td>
+      <td class="num">{{ p.autoavaliacao|floatformat:2|default:"–" }}</td></tr>
+  {% empty %}<tr><td colspan="5">Ainda não há respostas.</td></tr>{% endfor %}
+  </tbody>
+</table>
+</div>
+<p>Turmas: {% for t in turmas %}<a href="{% url 'avaliacao:turma' t.pk %}">{{ t.nome }}</a>{% if not forloop.last %} · {% endif %}{% endfor %}</p>
+{% endblock %}

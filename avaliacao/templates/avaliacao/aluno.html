@@ -1,0 +1,34 @@
+{% extends "avaliacao/base.html" %}
+{% block titulo %}Avaliação – {{ turma.nome }}{% endblock %}
+{% block conteudo %}
+<h1>{{ turma.nome }} – {{ turma.semestre }}</h1>
+<p class="sub">Avaliação dos professores pelos alunos. <strong>Suas respostas são anônimas.</strong></p>
+
+{% if tem_erro %}<p class="msg-erro">Faltou responder alguns itens. As disciplinas incompletas estão destacadas em vermelho.</p>{% endif %}
+
+<form method="post">{% csrf_token %}
+{% for bloco in blocos %}
+  {% ifchanged bloco.disciplina %}<h2>{{ bloco.disciplina.nome }} – {{ bloco.disciplina.professor.nome }}</h2>{% endifchanged %}
+  <div class="card{% if bloco.erro %} erro{% endif %}">
+    <strong>{{ bloco.rotulo }}</strong>
+    <table class="escala">
+      <thead><tr><th></th>{% for v, nome in escala %}<th class="op">{{ nome }}</th>{% endfor %}</tr></thead>
+      <tbody>
+      {% for linha in bloco.linhas %}
+        <tr>
+          <td>{{ linha.item.texto }}</td>
+          {% for v, nome in escala %}
+            <td class="op"><input type="radio" name="{{ linha.campo }}" value="{{ v }}" aria-label="{{ nome }}"
+              {% if linha.marcado == v|stringformat:"d" %}checked{% endif %}></td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% empty %}
+  <p>Nenhuma disciplina cadastrada para esta turma ainda.</p>
+{% endfor %}
+{% if blocos %}<p><button type="submit">Enviar avaliação</button></p>{% endif %}
+</form>
+{% endblock %}
