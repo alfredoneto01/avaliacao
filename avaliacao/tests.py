@@ -37,13 +37,23 @@ class FormularioAlunoTests(Base):
         self.assertNotIn('10.0.0.1', resposta.ip_hash)
         self.assertEqual(resposta.ip_hash, relatorios.hash_curto('10.0.0.1'))
 
+    def test_nome_e_opcional(self):
+        self.enviar_aluno(self.respostas_completas())
+        self.assertEqual(RespostaAluno.objects.get().nome, '')
+
+    def test_nome_informado_e_gravado(self):
+        self.enviar_aluno({**self.respostas_completas(), 'nome': '  Maria Silva  '})
+        self.assertEqual(RespostaAluno.objects.get().nome, 'Maria Silva')
+
     def test_envio_incompleto_e_recusado_mantendo_marcacoes(self):
         dados = self.respostas_completas(3)
         dados.pop(f'n_{self.vocacao.pk}_{self.itens[0].pk}')
+        dados['nome'] = 'Maria'
         resp = self.enviar_aluno(dados)
         self.assertEqual(resp.status_code, 200)
         self.assertContains(resp, 'Faltou responder')
         self.assertContains(resp, 'checked', count=17)
+        self.assertContains(resp, 'value="Maria"')
         self.assertFalse(RespostaAluno.objects.exists())
 
     def test_valor_fora_da_escala_e_recusado(self):

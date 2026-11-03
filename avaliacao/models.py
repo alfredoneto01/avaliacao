@@ -101,13 +101,14 @@ class Item(models.Model):
 
 
 class RespostaAluno(models.Model):
-    """Um envio anônimo do formulário do aluno.
+    """Um envio do formulário do aluno, anônimo a menos que ele informe o nome.
 
     Não guarda IP nem navegador em texto: apenas hashes, suficientes para
     detectar envios repetidos sem permitir identificar o aluno.
     """
 
     turma = models.ForeignKey(Turma, on_delete=models.PROTECT, related_name='respostas')
+    nome = models.CharField('Nome do aluno', max_length=120, blank=True)
     criada_em = models.DateTimeField(auto_now_add=True)
     ip_hash = models.CharField(max_length=16, db_index=True)
     navegador_hash = models.CharField(max_length=16)

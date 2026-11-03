@@ -57,10 +57,11 @@ class ItemAdmin(admin.ModelAdmin):
 
 @admin.register(RespostaAluno)
 class RespostaAlunoAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'turma', 'criada_em', 'ip_hash', 'descartada']
+    list_display = ['pk', 'turma', 'nome', 'criada_em', 'ip_hash', 'descartada']
     list_filter = ['turma__semestre', 'turma', 'descartada']
     list_editable = ['descartada']
-    readonly_fields = ['turma', 'criada_em', 'ip_hash', 'navegador_hash']
+    search_fields = ['nome']
+    readonly_fields = ['turma', 'nome', 'criada_em', 'ip_hash', 'navegador_hash']
 
     def has_add_permission(self, request):
         return False

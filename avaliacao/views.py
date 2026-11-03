@@ -24,6 +24,7 @@ def aluno(request, token):
     itens = list(Item.objects.filter(ativo=True))
     valores_validos = {str(v) for v, _ in ESCALA}
     marcados, faltando = {}, set()
+    nome = request.POST.get('nome', '').strip()[:120]
 
     if request.method == 'POST':
         for d in disciplinas:
@@ -38,6 +39,7 @@ def aluno(request, token):
             with transaction.atomic():
                 resposta = RespostaAluno.objects.create(
                     turma=turma,
+                    nome=nome,
                     ip_hash=relatorios.hash_curto(relatorios.ip_do_request(request)),
                     navegador_hash=relatorios.hash_curto(request.META.get('HTTP_USER_AGENT', '')),
                 )
@@ -62,7 +64,7 @@ def aluno(request, token):
                 })
 
     return render(request, 'avaliacao/aluno.html', {
-        'turma': turma, 'blocos': blocos, 'escala': ESCALA, 'tem_erro': bool(faltando),
+        'turma': turma, 'blocos': blocos, 'escala': ESCALA, 'tem_erro': bool(faltando), 'nome': nome,
     })
 
 
@@ -198,13 +200,14 @@ def exportar_excel(request, pk):
                     ws.append([turma.nome, d.nome, d.professor.nome, g['rotulo'], i['texto'], i['media'], i['total']])
 
     ws = wb.create_sheet('Respostas dos alunos')
-    ws.append(['Resposta', 'Data', 'Turma', 'Disciplina', 'Professor', 'Pergunta', 'Nota', 'Valor', 'Descartada'])
+    ws.append(['Resposta', 'Data', 'Aluno', 'Turma', 'Disciplina', 'Professor', 'Pergunta', 'Nota', 'Valor',
+               'Descartada'])
     notas = Nota.objects.filter(resposta__turma__semestre=semestre).select_related(
         'resposta__turma', 'disciplina__professor', 'item'
     ).order_by('resposta_id', 'disciplina__ordem', 'item__ordem')
     for n in notas:
         ws.append([
-            n.resposta_id, n.resposta.criada_em.replace(tzinfo=None), n.resposta.turma.nome,
+            n.resposta_id, n.resposta.criada_em.replace(tzinfo=None), n.resposta.nome, n.resposta.turma.nome,
             n.disciplina.nome, n.disciplina.professor.nome, n.item.texto,
             rotulo[n.valor], n.valor, 'sim' if n.resposta.descartada else 'não',
         ])

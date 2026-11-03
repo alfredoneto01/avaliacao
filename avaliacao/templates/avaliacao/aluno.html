@@ -2,11 +2,17 @@
 {% block titulo %}Avaliação – {{ turma.nome }}{% endblock %}
 {% block conteudo %}
 <h1>{{ turma.nome }} – {{ turma.semestre }}</h1>
-<p class="sub">Avaliação dos professores pelos alunos. <strong>Suas respostas são anônimas.</strong></p>
+<p class="sub">Avaliação dos professores pelos alunos.</p>
 
 {% if tem_erro %}<p class="msg-erro">Faltou responder alguns itens. As disciplinas incompletas estão destacadas em vermelho.</p>{% endif %}
 
 <form method="post">{% csrf_token %}
+{% if blocos %}
+  <div class="card">
+    <label for="id_nome"><strong>Nome</strong></label>
+    <input type="text" name="nome" id="id_nome" maxlength="120" value="{{ nome }}" autocomplete="name">
+  </div>
+{% endif %}
 {% for bloco in blocos %}
   {% ifchanged bloco.disciplina %}<h2>{{ bloco.disciplina.nome }} – {{ bloco.disciplina.professor.nome }}</h2>{% endifchanged %}
   <div class="card{% if bloco.erro %} erro{% endif %}">

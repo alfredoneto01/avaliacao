@@ -9,11 +9,11 @@ Respostas descartadas saem dos relatórios e podem ser restauradas.</p>
   <div class="card">
     <strong>IP <code>{{ g.ip_hash }}</code></strong> – {{ g.respostas|length }} respostas
     <table>
-      <thead><tr><th>#</th><th>Enviada em</th><th>Aparelho</th><th></th></tr></thead>
+      <thead><tr><th>#</th><th>Enviada em</th><th>Aluno</th><th>Aparelho</th><th></th></tr></thead>
       <tbody>
       {% for r in g.respostas %}
         <tr{% if r.descartada %} class="riscado"{% endif %}>
-          <td>{{ r.pk }}</td><td>{{ r.criada_em|date:"d/m/Y H:i:s" }}</td>
+          <td>{{ r.pk }}</td><td>{{ r.criada_em|date:"d/m/Y H:i:s" }}</td><td>{{ r.nome|default:"–" }}</td>
           <td><code>{{ r.navegador_hash }}</code> {% if r.mesmo_aparelho %}<span class="tag pend">mesmo aparelho</span>{% endif %}</td>
           <td class="num"><form method="post" action="{% url 'avaliacao:descartar' r.pk %}">{% csrf_token %}<button class="sec">{% if r.descartada %}Restaurar{% else %}Descartar{% endif %}</button></form></td>
         </tr>
